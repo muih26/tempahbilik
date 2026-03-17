@@ -1,157 +1,94 @@
 const sheetURL = "https://script.google.com/macros/s/AKfycbyGGFEeFt7Qb_S0YJM4-YoAo53k6Jp71ZSQfFhUA0BXztRG_rbF14jJqZDh9DqTz2qI/exec";
 
-const rooms = [
- {name:"Makmal 1", class:"makmal"},
- {name:"Makmal 2", class:"makmal"},
- {name:"Pusat Sumber", class:"pusat"},
- {name:"Bilik Mesyuarat", class:"mesyuarat"},
- {name:"Dewan Besar", class:"dewan"}
-];
-
 let bookings = [];
-let selected = [];
-let selecting = false;
 
-function init(){
-    document.getElementById("tarikh").value = today();
-
-    let dropdown = document.getElementById("bilik");
-    rooms.forEach(r=>{
-        let opt = document.createElement("option");
-        opt.text = r.name;
-        dropdown.add(opt);
-    });
-
-    loadData();
-}
-
-function today(){
+function today() {
     return new Date().toISOString().split('T')[0];
 }
 
-function build(){
-    let div = document.getElementById("schedule");
-    div.innerHTML="";
+function checkOverlap(newData) {
+    return bookings.some(b =>
+        b.bilik === newData.bilik &&
+        b.tarikh === newData.tarikh &&
+        (newData.mula <= b.tamat && newData.tamat >= b.mula)
+    );
+}
 
-    div.appendChild(cell("Bilik/Waktu",true));
+function render() {
+    let tbody = document.querySelector("#table tbody");
+    tbody.innerHTML = "";
 
-    for(let i=1;i<=17;i++){
-        div.appendChild(cell(i,true));
-    }
+    bookings.sort((a,b)=> a.mula - b.mula);
 
-    rooms.forEach(r=>{
-        div.appendChild(cell(r.name,true));
-
-        for(let i=1;i<=17;i++){
-            let c = cell("");
-            c.dataset.room = r.name;
-            c.dataset.time = i;
-            c.classList.add(r.class);
-            c.onclick = ()=>clickCell(c);
-            div.appendChild(c);
-        }
+    bookings.forEach(b => {
+        let row = `<tr>
+        <td>${b.nama}</td>
+        <td>${b.bilik}</td>
+        <td>${b.mula}</td>
+        <td>${b.tamat}</td>
+        <td>${b.tarikh}</td>
+        </tr>`;
+        tbody.innerHTML += row;
     });
 }
 
-function cell(txt,header=false){
-    let d=document.createElement("div");
-    d.className="cell"+(header?" header":"");
-    d.innerText=txt;
-    return d;
-}
+// SUBMIT
 
-function clickCell(c){
-    if(!selecting) return;
+document.getElementById("bookingForm").addEventListener("submit", async function(e){
+    e.preventDefault();
 
-    if(c.classList.contains("booked")){
-        alert("Slot sudah ditempah!");
-        return;
-    }
+    let nama = document.getElementById("nama").value;
+    let bilik = document.getElementById("bilik").value;
+    let mula = parseInt(document.getElementById("mula").value);
+    let tamat = parseInt(document.getElementById("tamat").value);
 
-    c.classList.toggle("selected");
+    let tarikh = today();
 
-    let room=c.dataset.room;
-    let time=parseInt(c.dataset.time);
-
-    let i=selected.findIndex(s=>s.room===room&&s.time===time);
-    if(i>=0) selected.splice(i,1);
-    else selected.push({room,time});
-}
-
-function startSelect(){
-    selecting=true;
-    selected=[];
-    alert("Pilih slot (maks 4 waktu)");
-}
-
-async function confirmBooking(){
-    let nama=document.getElementById("nama").value;
-    let bilik=document.getElementById("bilik").value;
-    let tarikh=document.getElementById("tarikh").value;
-
-    let slots=selected.filter(s=>s.room===bilik).map(s=>s.time);
-
-    if(slots.length===0){
-        alert("Tiada slot dipilih");
-        return;
-    }
-
-    slots.sort((a,b)=>a-b);
-
-    if(nama!=="Muskhairil" && slots.length>4){
+    if(nama !== "Muskhairil" && (tamat - mula + 1 > 4)){
         alert("Maksimum 4 waktu sahaja!");
         return;
     }
 
-    let mula=slots[0];
-    let tamat=slots[slots.length-1];
+    let newBooking = {nama, bilik, mula, tamat, tarikh};
 
-    let overlap=bookings.some(b=>
-        b.bilik===bilik &&
-        b.tarikh===tarikh &&
-        (mula<=b.tamat && tamat>=b.mula)
-    );
-
-    if(overlap){
+    if(checkOverlap(newBooking)){
         alert("Tempahan bertindih!");
         return;
     }
 
-    let data={nama,bilik,mula,tamat,tarikh};
+    bookings.push(newBooking);
 
-    await fetch(sheetURL,{
-        method:"POST",
-        body:JSON.stringify(data)
+    await fetch(sheetURL, {
+        method: "POST",
+        body: JSON.stringify(newBooking)
     });
 
     alert("Tempahan berjaya!");
-    loadData();
-}
+    render();
+});
 
-function paint(){
-    document.querySelectorAll(".cell").forEach(c=>{
-        if(c.dataset.room){
-            c.classList.remove("booked","selected");
-            c.innerText="";
-        }
+function generatePDF(){
+    const { jsPDF } = window.jspdf;
+    let doc = new jsPDF();
+
+    let start = document.getElementById("startDate").value;
+    let end = document.getElementById("endDate").value;
+
+    let filtered = bookings.filter(b => b.tarikh >= start && b.tarikh <= end);
+
+    let y = 10;
+    filtered.forEach(b => {
+        doc.text(`${b.nama} | ${b.bilik} | ${b.mula}-${b.tamat} | ${b.tarikh}`, 10, y);
+        y += 10;
     });
 
-    bookings.forEach(b=>{
-        for(let t=b.mula;t<=b.tamat;t++){
-            let c=document.querySelector(`[data-room='${b.bilik}'][data-time='${t}']`);
-            if(c){
-                c.classList.add("booked");
-                c.innerText=b.nama;
-            }
-        }
-    });
+    doc.save("laporan.pdf");
 }
 
 async function loadData(){
-    let res=await fetch(sheetURL);
-    bookings=await res.json();
-    build();
-    paint();
+    let res = await fetch(sheetURL);
+    bookings = await res.json();
+    render();
 }
 
-init();
+loadData();
