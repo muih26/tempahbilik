@@ -24,15 +24,12 @@ function render() {
         let row = `<tr>
         <td>${b.nama}</td>
         <td>${b.bilik}</td>
-        <td>${b.mula}</td>
-        <td>${b.tamat}</td>
+        <td>${b.mula} - ${b.tamat}</td>
         <td>${b.tarikh}</td>
         </tr>`;
         tbody.innerHTML += row;
     });
 }
-
-// SUBMIT
 
 document.getElementById("bookingForm").addEventListener("submit", async function(e){
     e.preventDefault();
