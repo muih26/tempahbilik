@@ -3,40 +3,40 @@ body {
     margin: 20px;
 }
 
-.top-bar {
+.container {
     display: flex;
+    gap: 40px;
+}
+
+form {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
     gap: 10px;
-    margin-bottom: 20px;
 }
 
-#schedule {
-    display: grid;
-    grid-template-columns: 140px repeat(17, 1fr);
+input, select, button {
+    padding: 6px;
 }
 
-.cell {
-    border: 1px solid #ccc;
+button {
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid black;
     padding: 6px;
     text-align: center;
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.header {
-    background: black;
-    color: white;
-}
-
-/* warna bilik */
-.makmal { background: #2196F3; color: white; }
-.pusat { background: #4CAF50; color: white; }
-.mesyuarat { background: #FF9800; color: white; }
-.dewan { background: #9C27B0; color: white; }
-
-.booked {
-    opacity: 0.8;
-}
-
-.selected {
-    outline: 3px solid lime;
 }
