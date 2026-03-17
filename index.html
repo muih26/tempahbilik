@@ -2,22 +2,62 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Tempahan Bilik PRO</title>
+<title>Tempahan Bilik Khas</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
-<h2>📅 Sistem Tempahan Bilik (PRO)</h2>
+<h2>Tempahan Bilik Khas</h2>
 
-<div class="top-bar">
-<input type="text" id="nama" placeholder="Nama">
-<select id="bilik"></select>
-<input type="date" id="tarikh">
-<button onclick="startSelect()">Pilih Slot</button>
-<button onclick="confirmBooking()">Sahkan</button>
+<div class="container">
+
+<form id="bookingForm">
+<label>Nama:</label>
+<input type="text" id="nama" required>
+
+<label>Bilik:</label>
+<select id="bilik">
+<option>Makmal 1</option>
+<option>Makmal 2</option>
+<option>Pusat Sumber</option>
+<option>Bilik Mesyuarat</option>
+<option>Dewan Besar</option>
+</select>
+
+<label>Waktu Mula:</label>
+<input type="number" id="mula" min="1" max="17" required>
+
+<label>Waktu Tamat:</label>
+<input type="number" id="tamat" min="1" max="17" required>
+
+<button type="submit">Tempah</button>
+</form>
+
+<div>
+<h3>Dashboard Tempahan</h3>
+<table id="table">
+<thead>
+<tr>
+<th>Nama</th>
+<th>Bilik</th>
+<th>Mula</th>
+<th>Tamat</th>
+<th>Tarikh</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<br>
+<label>Tarikh Mula:</label>
+<input type="date" id="startDate">
+<label>Tarikh Tamat:</label>
+<input type="date" id="endDate">
+<button onclick="generatePDF()">Jana Laporan PDF</button>
 </div>
 
-<div id="schedule"></div>
+</div>
 
 <script src="script.js"></script>
 </body>
