@@ -1,4 +1,7 @@
-body { font-family: Arial; margin: 20px; }
+body {
+    font-family: Arial;
+    margin: 20px;
+}
 
 .top-bar {
     display: flex;
@@ -19,11 +22,21 @@ body { font-family: Arial; margin: 20px; }
     font-size: 12px;
 }
 
-.header { background: black; color: white; }
+.header {
+    background: black;
+    color: white;
+}
 
+/* warna bilik */
 .makmal { background: #2196F3; color: white; }
 .pusat { background: #4CAF50; color: white; }
 .mesyuarat { background: #FF9800; color: white; }
 .dewan { background: #9C27B0; color: white; }
-.booked { opacity: 0.8; }
-.selected { outline: 3px solid lime; }
+
+.booked {
+    opacity: 0.8;
+}
+
+.selected {
+    outline: 3px solid lime;
+}
