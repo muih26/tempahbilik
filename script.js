@@ -1,4 +1,4 @@
-const sheetURL = "PASTE_WEB_APP_URL";
+const sheetURL = "https://script.google.com/macros/s/AKfycbyGGFEeFt7Qb_S0YJM4-YoAo53k6Jp71ZSQfFhUA0BXztRG_rbF14jJqZDh9DqTz2qI/exec";
 
 let bookings = [];
 
