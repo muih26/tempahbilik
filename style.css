@@ -1,42 +1,78 @@
 body {
-    font-family: Arial;
-    margin: 20px;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background: #f4f6f9;
 }
 
-.container {
-    display: flex;
-    gap: 40px;
+.header {
+    background: #1e293b;
+    color: white;
+    padding: 15px 20px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
 }
 
 form {
-    width: 300px;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-input, select, button {
-    padding: 6px;
+input, select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
 }
 
 button {
-    background: #007bff;
+    padding: 10px;
+    background: #2563eb;
     color: white;
     border: none;
+    border-radius: 6px;
     cursor: pointer;
 }
 
 button:hover {
-    background: #0056b3;
+    background: #1d4ed8;
 }
 
 table {
-    border-collapse: collapse;
     width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
 }
 
-th, td {
-    border: 1px solid black;
-    padding: 6px;
+th {
+    background: #1e293b;
+    color: white;
+    padding: 10px;
+}
+
+td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
     text-align: center;
+}
+
+tr:hover {
+    background: #f1f5f9;
+}
+
+.report {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
 }
